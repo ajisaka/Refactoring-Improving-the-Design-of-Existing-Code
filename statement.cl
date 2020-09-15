@@ -79,8 +79,8 @@
             (concatenate
               'string
               result
-              (format nil "Amount owed is ~$~%" (/ total-amount 100))
-              (format nil "You earned ~$~%" volume-credits)))
+              (format nil "Amount owed is $~$~%" (/ total-amount 100))
+              (format nil "You earned $~$~%" volume-credits)))
       result)))
 
 (loop for invoice in invoices
