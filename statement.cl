@@ -64,16 +64,15 @@
     (let ((total-amount 0)
           (result (format nil "Statement for ~A~%" (assoc-v :customer invoice))))
       (loop for perf in (assoc-v :performances invoice)
-            do (let* ((audience (assoc-v :audience perf)))
-                 (setf result
-                       (concatenate
-                         'string
-                         result
-                         (format nil "    ~A: $~$ (~A seats)~%"
-                                 (assoc-v :name (play-for perf))
-                                 (/ (amount-for perf) 100)
-                                 audience)))
-                 (incf total-amount (amount-for perf))))
+            do (setf result
+                     (concatenate
+                       'string
+                       result
+                       (format nil "    ~A: $~$ (~A seats)~%"
+                               (assoc-v :name (play-for perf))
+                               (/ (amount-for perf) 100)
+                               (assoc-v :audience perf))))
+            do (incf total-amount (amount-for perf)))
       (let ((volume-credits 0))
         (loop for perf in (assoc-v :performances invoice)
               do (incf volume-credits (volume-credits-for perf)))
