@@ -56,16 +56,15 @@
              (let ((result 0)
                    (audience (assoc-v :audience perf)))
                (incf result (max (- audience 30) 0))
-                 (when (eq :COMEDY (assoc-v :type (play-for perf)))
+                 (when (eq :COMEDY (as-keyword
+                                     (assoc-v :type (play-for perf))))
                    (incf result
                          (floor (/ audience 5))))
                  result)))
     (let ((total-amount 0)
-          (volume-credits 0)
           (result (format nil "Statement for ~A~%" (assoc-v :customer invoice))))
       (loop for perf in (assoc-v :performances invoice)
             do (let* ((audience (assoc-v :audience perf)))
-                 (incf volume-credits (volume-credits-for perf))
                  (setf result
                        (concatenate
                          'string
@@ -75,12 +74,15 @@
                                  (/ (amount-for perf) 100)
                                  audience)))
                  (incf total-amount (amount-for perf))))
-      (setf result
-            (concatenate
-              'string
-              result
-              (format nil "Amount owed is $~$~%" (/ total-amount 100))
-              (format nil "You earned $~$~%" volume-credits)))
+      (let ((volume-credits 0))
+        (loop for perf in (assoc-v :performances invoice)
+              do (incf volume-credits (volume-credits-for perf)))
+        (setf result
+              (concatenate
+                'string
+                result
+                (format nil "Amount owed is $~$~%" (/ total-amount 100))
+                (format nil "You earned $~$~%" volume-credits))))
       result)))
 
 (loop for invoice in invoices
