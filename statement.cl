@@ -25,25 +25,26 @@
 
 
 (defun statement (invoice plays)
-  (labels ((amount-for (perf)
-                       (let* ((result 0)
-                              (type (as-keyword (assoc-v :type (play-for perf))))
-                              (audience (assoc-v :audience perf)))
-                         (case
-                           type
-                           (:TRAGEDY
-                             (setf result 40000)
-                             (when (< 30 audience)
-                               (incf result
-                                     (* 1000 (- audience 30)))))
-                           (:COMEDY
-                             (setf result 30000)
-                             (when (< 20 audience)
-                               (incf result
-                                     (+ 10000
-                                        (* 500 (- audience 20)))))
-                             (incf result (* 300 audience))))
-                         result))
+  (labels ((amount-for
+             (perf)
+             (let* ((result 0)
+                    (type (as-keyword (assoc-v :type (play-for perf))))
+                    (audience (assoc-v :audience perf)))
+               (case
+                 type
+                 (:TRAGEDY
+                   (setf result 40000)
+                   (when (< 30 audience)
+                     (incf result
+                           (* 1000 (- audience 30)))))
+                 (:COMEDY
+                   (setf result 30000)
+                   (when (< 20 audience)
+                     (incf result
+                           (+ 10000
+                              (* 500 (- audience 20)))))
+                   (incf result (* 300 audience))))
+               result))
            (play-for (perf)
                      (assoc-v
                        (as-keyword
