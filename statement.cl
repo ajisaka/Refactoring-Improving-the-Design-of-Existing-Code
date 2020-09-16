@@ -34,7 +34,7 @@
   audience)
 
 
-(defun render-plain-text (statement-data plays)
+(defun render-plain-text (statement-data)
   (with-output-to-string (out)
     (format out "Statement for ~A~%" (statement-data-customer statement-data))
     (loop for perf in (statement-data-performances statement-data)
@@ -114,7 +114,7 @@
         statement-data))))
 
 (defun statement (invoice plays)
-  (render-plain-text (create-statement invoice plays) plays))
+  (render-plain-text (create-statement invoice plays)))
 
 
 (loop for invoice in invoices
