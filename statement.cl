@@ -22,9 +22,11 @@
   (cdr (assoc key alist)))
 
 
+(defstruct statement-data
+  customer)
 
 
-(defun statement (invoice plays)
+(defun render-plain-text (statement-data invoice plays)
   (labels ((amount-for
              (perf)
              (let* ((result 0)
@@ -74,7 +76,7 @@
                (loop for perf in (assoc-v :performances invoice)
                      do (incf result (amount-for perf)))
                result)))
-    (let ((result (format nil "Statement for ~A~%" (assoc-v :customer invoice))))
+    (let ((result (format nil "Statement for ~A~%" (statement-data-customer statement-data))))
       (loop for perf in (assoc-v :performances invoice)
             do (setf result
                      (concatenate
@@ -91,6 +93,12 @@
               (format nil "Amount owed is $~$~%" (/ (total-amount) 100))
               (format nil "You earned $~$~%" (total-volume-credits))))
       result)))
+
+(defun Statement (invoice plays)
+  (let ((statement-data (make-statement-data
+                          :customer (assoc-v :customer invoice))))
+    (render-plain-text statement-data invoice plays)))
+
 
 (loop for invoice in invoices
       do (format t "~A~%" (statement invoice plays)))
