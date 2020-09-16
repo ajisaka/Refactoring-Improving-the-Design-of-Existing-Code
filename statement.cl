@@ -38,10 +38,10 @@
   (with-output-to-string (out)
     (format out "Statement for ~A~%" (statement-data-customer statement-data))
     (loop for perf in (statement-data-performances statement-data)
-          do                      (format out "    ~A: $~$ (~A seats)~%"
-                                          (assoc-v :name (performance-play perf))
-                                          (/ (performance-amount perf) 100)
-                                          (performance-audience perf))
+          do (format out "    ~A: $~$ (~A seats)~%"
+                     (assoc-v :name (performance-play perf))
+                     (/ (performance-amount perf) 100)
+                     (performance-audience perf))
           (format out "Amount owed is $~$~%" (/ (statement-data-total-amount statement-data) 100))
           (format out "You earned $~$~%" (statement-data-total-volume-credits statement-data)))))
 
