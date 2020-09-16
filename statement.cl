@@ -23,10 +23,11 @@
 
 
 (defstruct statement-data
-  customer)
+  customer
+  performances)
 
 
-(defun render-plain-text (statement-data invoice plays)
+(defun render-plain-text (statement-data plays)
   (labels ((amount-for
              (perf)
              (let* ((result 0)
@@ -67,17 +68,17 @@
            (total-volume-credits
              ()
              (let ((result 0))
-               (loop for perf in (assoc-v :performances invoice)
+               (loop for perf in (statement-data-performances statement-data)
                      do (incf result (volume-credits-for perf)))
                result))
            (total-amount
              ()
              (let ((result 0))
-               (loop for perf in (assoc-v :performances invoice)
+               (loop for perf in (statement-data-performances statement-data)
                      do (incf result (amount-for perf)))
                result)))
     (let ((result (format nil "Statement for ~A~%" (statement-data-customer statement-data))))
-      (loop for perf in (assoc-v :performances invoice)
+      (loop for perf in (statement-data-performances statement-data)
             do (setf result
                      (concatenate
                        'string
@@ -96,8 +97,9 @@
 
 (defun Statement (invoice plays)
   (let ((statement-data (make-statement-data
-                          :customer (assoc-v :customer invoice))))
-    (render-plain-text statement-data invoice plays)))
+                          :customer (assoc-v :customer invoice)
+                          :performances (assoc-v :performances invoice))))
+    (render-plain-text statement-data plays)))
 
 
 (loop for invoice in invoices
