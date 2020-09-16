@@ -45,7 +45,7 @@
           (format out "Amount owed is $~$~%" (/ (statement-data-total-amount statement-data) 100))
           (format out "You earned $~$~%" (statement-data-total-volume-credits statement-data)))))
 
-(defun Statement (invoice plays)
+(defun create-statement (invoice plays)
   (labels
     ((play-for (perf)
                (assoc-v
@@ -111,7 +111,10 @@
               (total-amount statement-data))
         (setf (statement-data-total-volume-credits statement-data)
               (total-volume-credits statement-data))
-        (render-plain-text statement-data plays)))))
+        statement-data))))
+
+(defun statement (invoice plays)
+  (render-plain-text (create-statement invoice plays) plays))
 
 
 (loop for invoice in invoices
